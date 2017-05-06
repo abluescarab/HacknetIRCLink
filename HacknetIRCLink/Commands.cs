@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Hacknet;
 using ChatSharp;
+using Pathfinder;
+using Pathfinder.Util;
 using System.Text.RegularExpressions;
 
 namespace HacknetIRCLink
@@ -25,7 +27,7 @@ namespace HacknetIRCLink
             if (args.Count < 2)
             {
                 os.write(ircCommandUsage);
-                Console.WriteLine("Usage sent");
+                Logger.Verbose("Usage sent");
                 return false;
             }
             if (args[1] == "link")

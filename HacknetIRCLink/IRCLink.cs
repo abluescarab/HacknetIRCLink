@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Pathfinder;
+using Pathfinder.Util;
 
 namespace HacknetIRCLink
 {
@@ -67,7 +69,7 @@ namespace HacknetIRCLink
 
         public bool Connect(string ip, string channel)
         {
-            Console.WriteLine(Nick);
+            Logger.Verbose(Nick);
 
             if(state != IRCLinkState.Ready)
                 return false;

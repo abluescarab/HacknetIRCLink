@@ -18,7 +18,7 @@ namespace HacknetIRCLink
 
         public void Load()
         {
-            Console.WriteLine("Hacknet-IRC Link loaded.");
+            Logger.Verbose("Hacknet-IRC Link loaded.");
         }
 
         public void LoadContent()
@@ -28,7 +28,7 @@ namespace HacknetIRCLink
 
         public void Unload()
         {
-            Console.WriteLine("Unloading Hacknet_IRC Link");
+            Logger.Verbose("Unloading Hacknet_IRC Link");
         }
         
     }
