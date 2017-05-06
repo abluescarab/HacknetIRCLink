@@ -33,6 +33,12 @@ namespace HacknetIRCLink
             {
                 if (arg.Length < 4)
                 {
+                    if(!string.IsNullOrEmpty(link.DefaultServer))
+                    {
+                        os.write("Linked to " + link.DefaultServer + " " + link.DefaultChannel);
+                    }
+
+                    os.write(Environment.NewLine);
                     os.write("Usage : irc link [SERVER] [CHANNEL]");
                     return false;
                 }
