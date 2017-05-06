@@ -55,34 +55,29 @@ namespace HacknetIRCLink
                 }
                 else
                 {
-                    if(link.state != IRCLink.IRCLinkState.Ready)
+                    if(!link.Connect())
                     {
-                        os.write("Please use \"irc link\" to set the server and channel first or provide a server and channel to \"irc connect\".");
+                        os.write("You have not specified a server or channel.");
                         return false;
                     }
 
-                    link.Connect();
+                    return true;
                 }
             }
             else if (arg[1] == "disconnect")
             {
-                if (link.state != IRCLink.IRCLinkState.Connected)
+                if(!link.Disconnect())
                 {
                     os.write("You are already disconnected.");
                     return false;
                 }
-                link.Disconnect();
+                
                 os.write("IRC client closed.");
                 return false;
             }
 
             else if (arg[1] == "s")
             {
-                if (link.state != IRCLink.IRCLinkState.Connected)
-                {
-                    os.write("Please connect to a server using \"irc connect\" before sending a message.");
-                    return false;
-                }
                 if (arg.Length < 3)
                 {
                     os.write("Usage : irc s [MESSAGE]");
@@ -93,7 +88,14 @@ namespace HacknetIRCLink
                     string message = arg[2];
                     for (int i = 3; i < arg.Length; i++)
                         message += " " + arg[i];
-                    link.Send(message);
+
+                    if(!link.Send(message))
+                    {
+                        os.write("Please connect to a server using \"irc connect\" before sending a message.");
+                        return false;
+                    }
+
+                    return true;
                 }
             }
             else if (arg[1] == "help")
