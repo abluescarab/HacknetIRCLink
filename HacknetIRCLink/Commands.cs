@@ -7,7 +7,6 @@ using System.Threading;
 using Hacknet;
 using ChatSharp;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace HacknetIRCLink
 {
