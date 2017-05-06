@@ -15,11 +15,11 @@ namespace HacknetIRCLink
         Hacknet.OS os;
 
         public IRCLinkState state = IRCLinkState.Uninitialized;
+        public string defaultServer = "";
+        public string defaultChannel = "";
+        public string connectedServer = "";
+        public string connectedChannel = "";
 
-        string defaultServer = "";
-        string defaultChannel = "";
-        string connectedServer = "";
-        string connectedChannel = "";
         string Nick = "";
 
         IrcClient client;
