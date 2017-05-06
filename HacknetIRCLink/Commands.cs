@@ -16,14 +16,14 @@ namespace HacknetIRCLink
     {
         public static class IRCCmd
         {
-            public static string Description = "Hacknet IRC client";
-            static string usage = "Usage: irc [link/connect/disconnect/switch/s/help]";
+            public const string Key = "irc";
+            public const string Description = "Hacknet IRC client";
+            const string usage = "Usage: irc [link/connect/disconnect/switch/help]";
             
             public static bool IRCCommand(Hacknet.OS os, List<string> args)
             {
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
                 IRCLink link = IRCLink.getInstance(NickName, os);
-                bool printNewLine = true;
 
                 os.write(Environment.NewLine);
 
@@ -106,28 +106,6 @@ namespace HacknetIRCLink
 
                     os.write("Switched to channel " + args[2]);
                 }
-                else if (args[1] == "s")
-                {
-                    if (args.Count < 3)
-                    {
-                        os.write("Usage : irc s [MESSAGE]");
-                        return false;
-                    }
-                    else
-                    {
-                        string message = args[2];
-                        for (int i = 3; i < args.Count; i++)
-                            message += " " + args[i];
-
-                        if(!link.Send(message))
-                        {
-                            os.write("Please connect to a server using \"irc connect\" before sending a message.");
-                            return false;
-                        }
-                    
-                        printNewLine = false;
-                    }
-                }
                 else if (args[1] == "help")
                 {
                     os.write(usage +
@@ -150,9 +128,8 @@ namespace HacknetIRCLink
                     os.write(usage);
                     return false;
                 }
-
-                if(printNewLine)
-                    os.write(Environment.NewLine);
+                
+                os.write(Environment.NewLine);
 
                 return true;
             }
@@ -191,6 +168,37 @@ namespace HacknetIRCLink
                 }
 
                 return file;
+            }
+        }
+
+        public static class SayCmd
+        {
+            public const string Key = "say";
+            public const string Description = "Send a message to the IRC channel";
+            const string usage = "Usage: say [MESSAGE]";
+
+            public static bool SayCommand(OS os, List<string> args)
+            {
+                if(args.Count < 2)
+                {
+                    os.write(usage);
+                    return false;
+                }
+                
+                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.getInstance(NickName, os);
+                string message = args[1];
+
+                for (int i = 2; i < args.Count; i++)
+                    message += " " + args[i];
+
+                if(!link.Send(message))
+                {
+                    os.write("Please connect to a server using \"irc connect\" before sending a message.");
+                    return false;
+                }
+
+                return true;
             }
         }
     }
