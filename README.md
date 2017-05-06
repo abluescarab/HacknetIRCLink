@@ -9,6 +9,8 @@ The arguments are as follows:
 * connect: connects to a server of your choosing (*irc connect [SERVER] [CHANNEL]* or *irc connect* to connect to the linked server)
 * disconnect: pretty self explenatory (*irc disconnect*)
 * switch: changes your channel (*irc switch [CHANNEL]*)
-* s: sends a message to the current channel (*irc s [MESSAGE]*)
-  
+* send: sends a message to the current channel (*irc send [MESSAGE]*)
+
+You can also use the "send" command to send messages.
+
 In order to use the mod you HAVE to put chatsharp.dll in the same folder as Hacknet.exe.
