@@ -12,8 +12,12 @@ namespace HacknetIRCLink
 {
     class Commands
     {
+        static string ircCommandUsage = "Usage: irc [link/connect/disconnect/s/help]";
+
         public static bool IRCCommand(Hacknet.OS os, List<string> args)
         {
+            os.write(Environment.NewLine);
+
             string[] arg = args.ToArray();
             string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
             
@@ -21,7 +25,7 @@ namespace HacknetIRCLink
 
             if (arg.Length < 2)
             {
-                os.write(Environment.NewLine + "Usage : irc [link/s/start/stop]. Type irc help for a guide." + Environment.NewLine);
+                os.write(ircCommandUsage);
                 Console.WriteLine("Usage sent");
                 return false;
             }
@@ -29,39 +33,38 @@ namespace HacknetIRCLink
             {
                 if (arg.Length < 4)
                 {
-                    os.write(Environment.NewLine + "Usage : irc link [SERVER] [CHANNEL]" + Environment.NewLine);
+                    os.write("Usage : irc link [SERVER] [CHANNEL]");
                     return false;
                 }
                 else
                 {
                     if (arg[3][0] != '#')
                     {
-                        os.write(Environment.NewLine + "Channel name invalid. Did you forget the #?" + Environment.NewLine);
+                        os.write("Channel name invalid. Did you forget the #?");
                         return false;
                     }
                     link.LinkServer(arg[2], args[3]);
-                    os.write(Environment.NewLine + "Server and channel set." + Environment.NewLine);
+                    os.write("Server and channel set.");
                 }
             }
-            else if (arg[1] == "start")
+            else if (arg[1] == "connect")
             {
-                if (link.state != IRCLink.IRCLinkState.Ready)
+                if(link.state != IRCLink.IRCLinkState.Ready)
                 {
-                    os.write(Environment.NewLine + "Please use irc link to set the server and channel first." + Environment.NewLine);
+                    os.write("Please use \"irc link\" to set the server and channel first.");
                     return false;
                 }
                 link.Connect();
-
             }
-            else if (arg[1] == "stop")
+            else if (arg[1] == "disconnect")
             {
                 if (link.state != IRCLink.IRCLinkState.Connected)
                 {
-                    os.write(Environment.NewLine + "You are already disconnected." + Environment.NewLine);
+                    os.write("You are already disconnected.");
                     return false;
                 }
                 link.Disconnect();
-                os.write(Environment.NewLine + "IRC client closed." + Environment.NewLine);
+                os.write("IRC client closed.");
                 return false;
             }
 
@@ -69,12 +72,12 @@ namespace HacknetIRCLink
             {
                 if (link.state != IRCLink.IRCLinkState.Connected)
                 {
-                    os.write(Environment.NewLine + "Please connect to a server using irc start before sending a message." + Environment.NewLine);
+                    os.write("Please connect to a server using \"irc connect\" before sending a message.");
                     return false;
                 }
                 if (arg.Length < 3)
                 {
-                    os.write(Environment.NewLine + "Usage : irc s [MESSAGE]" + Environment.NewLine);
+                    os.write("Usage : irc s [MESSAGE]");
                     return false;
                 }
                 else
@@ -87,18 +90,29 @@ namespace HacknetIRCLink
             }
             else if (arg[1] == "help")
             {
-                os.write(Environment.NewLine + "To set the server and channel use 'irc link [SERVER] [CHANNEL]'");
-                os.write("Then to start the client use 'irc start'");
-                os.write("To talk use 'irc s [MESSAGE]'");
-                os.write("Once you're done, use 'irc stop' to close the client."+ Environment.NewLine);
+                os.write(
+                    ircCommandUsage +
+                    Environment.NewLine + "    link [SERVER] [CHANNEL]" +
+                    Environment.NewLine + "        link to a server" +
+                    Environment.NewLine + "    connect (SERVER) (CHANNEL)" +
+                    Environment.NewLine + "        connect to the linked server or a provided server" +
+                    Environment.NewLine + "    disconnect" +
+                    Environment.NewLine + "        disconnect from the server" +
+                    Environment.NewLine + "    s" +
+                    Environment.NewLine + "        send a message to the connected channel" +
+                    Environment.NewLine + "    help" +
+                    Environment.NewLine + "        show this message");
             }
 
             else
             {
-                os.write(Environment.NewLine + "Usage : irc [link/s/start/stop]. Type irc help for a guide." + Environment.NewLine);
+                os.write(ircCommandUsage);
+                return false;
             }
-            return false;
 
+            os.write(Environment.NewLine);
+
+            return true;
         }
     }
 }
