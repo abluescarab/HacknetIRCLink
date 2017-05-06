@@ -12,7 +12,7 @@ namespace HacknetIRCLink
 {
     class Commands
     {
-        static string ircCommandUsage = "Usage: irc [link/connect/disconnect/s/help]";
+        static string ircCommandUsage = "Usage: irc [link/connect/disconnect/switch/s/help]";
 
         public static bool IRCCommand(Hacknet.OS os, List<string> args)
         {
@@ -66,8 +66,6 @@ namespace HacknetIRCLink
                         os.write("You have not specified a server or channel.");
                         return false;
                     }
-
-                    return true;
                 }
             }
             else if (arg[1] == "disconnect")
@@ -79,9 +77,23 @@ namespace HacknetIRCLink
                 }
                 
                 os.write("IRC client closed.");
-                return false;
             }
+            else if(arg[1] == "switch")
+            {
+                if(arg.Length < 3)
+                {
+                    os.write("Usage: irc switch [CHANNEL]");
+                    return false;
+                }
 
+                if(!link.SwitchChannel(arg[2]))
+                {
+                    os.write("You are not connected to a server.");
+                    return false;
+                }
+
+                os.write("Switched to channel " + arg[2]);
+            }
             else if (arg[1] == "s")
             {
                 if (arg.Length < 3)
@@ -100,8 +112,6 @@ namespace HacknetIRCLink
                         os.write("Please connect to a server using \"irc connect\" before sending a message.");
                         return false;
                     }
-
-                    return true;
                 }
             }
             else if (arg[1] == "help")
@@ -114,6 +124,8 @@ namespace HacknetIRCLink
                     Environment.NewLine + "        connect to the linked server or a provided server" +
                     Environment.NewLine + "    disconnect" +
                     Environment.NewLine + "        disconnect from the server" +
+                    Environment.NewLine + "    switch [CHANNEL]" +
+                    Environment.NewLine + "        switches channels" +
                     Environment.NewLine + "    s" +
                     Environment.NewLine + "        send a message to the connected channel" +
                     Environment.NewLine + "    help" +

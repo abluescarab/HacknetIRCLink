@@ -107,6 +107,17 @@ namespace HacknetIRCLink
             return true;
         }
 
+        public bool SwitchChannel(string channel)
+        {
+            if(state != IRCLinkState.Connected)
+                return false;
+            
+            client.PartChannel(ConnectedChannel);
+            client.JoinChannel(channel);
+            ConnectedChannel = channel;
+            return true;
+        }
+
         public bool Disconnect()
         {
             if(state != IRCLinkState.Connected)
