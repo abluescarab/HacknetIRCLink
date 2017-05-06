@@ -20,12 +20,12 @@ namespace HacknetIRCLink
             public const string Description = "Hacknet IRC client";
             const string usage =
                 "Usage:" +
-                "\n    irc link [SERVER] [#CHANNEL]" +
-                "\n    irc connect (SERVER) (#CHANNEL)" +
-                "\n    irc disconnect" +
-                "\n    irc raw [MESSAGE]" +
-                "\n    irc switch [#CHANNEL]" +
-                "\n    irc help";
+                "\n    " + Key + " link [SERVER] [#CHANNEL]" +
+                "\n    " + Key + " connect (SERVER) (#CHANNEL)" +
+                "\n    " + Key + " disconnect" +
+                "\n    " + Key + " raw [MESSAGE]" +
+                "\n    " + Key + " switch [#CHANNEL]" +
+                "\n    " + Key + " help";
 
             public static bool IRCCommand(Hacknet.OS os, List<string> args)
             {
@@ -197,7 +197,7 @@ namespace HacknetIRCLink
         {
             public const string Key = "say";
             public const string Description = "Send a message to the IRC channel";
-            const string usage = "Usage: say [MESSAGE]";
+            const string usage = "Usage: " + Key + " [MESSAGE]";
 
             public static bool SayCommand(OS os, List<string> args)
             {
