@@ -16,15 +16,9 @@ namespace HacknetIRCLink
         {
             string[] arg = args.ToArray();
             string NickName = os.SaveUserAccountName;
-            NickName = NickName.Replace('(', '_');
-            NickName = NickName.Replace(')', '_');
-            NickName = NickName.Replace('+', '_');
-            NickName = NickName.Replace('*', '_');
-            NickName = NickName.Replace('\"', '_');
-            NickName = NickName.Replace('\'', '_');
-            NickName = NickName.Replace('\\', '_');
-            NickName = NickName.Replace('/', '_');
-
+            
+            NickName = Regex.Replace(NickName, "[^\\w\\d-_]", "_");
+            
             IRCLink link = IRCLink.getInstance(NickName, os);
 
             if (arg.Length < 2)
