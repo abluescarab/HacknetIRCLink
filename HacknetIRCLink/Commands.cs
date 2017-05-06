@@ -86,6 +86,12 @@ namespace HacknetIRCLink
                     return false;
                 }
 
+                if (arg[2][0] != '#')
+                {
+                    os.write("Channel name invalid. Did you forget the #?");
+                    return false;
+                }
+
                 if(!link.SwitchChannel(arg[2]))
                 {
                     os.write("You are not connected to a server.");
