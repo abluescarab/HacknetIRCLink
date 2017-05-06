@@ -15,10 +15,11 @@ namespace HacknetIRCLink
         Hacknet.OS os;
 
         public IRCLinkState state = IRCLinkState.Uninitialized;
-        public string defaultServer = "";
-        public string defaultChannel = "";
-        public string connectedServer = "";
-        public string connectedChannel = "";
+
+        public string DefaultServer { get; private set; }
+        public string DefaultChannel { get; private set; }
+        public string ConnectServer { get; private set; }
+        public string ConnectedChannel { get; private set; }
 
         string Nick = "";
 
@@ -55,13 +56,13 @@ namespace HacknetIRCLink
         
         public void LinkServer(string server, string channel)
         {
-            defaultServer = server;
-            defaultChannel = channel;
+            DefaultServer = server;
+            DefaultChannel = channel;
         }
 
         public bool Connect()
         {
-            return Connect(defaultServer, defaultChannel);
+            return Connect(DefaultServer, DefaultChannel);
         }
 
         public bool Connect(string ip, string channel)
@@ -99,8 +100,8 @@ namespace HacknetIRCLink
             };
 
             state = IRCLinkState.Connected;
-            connectedServer = ip;
-            connectedChannel = channel;
+            ConnectServer = ip;
+            ConnectedChannel = channel;
             client.ConnectAsync();
 
             return true;
@@ -111,8 +112,8 @@ namespace HacknetIRCLink
             if(state != IRCLinkState.Connected)
                 return false;
 
-            connectedServer = "";
-            connectedChannel = "";
+            ConnectServer = "";
+            ConnectedChannel = "";
             client.Quit();
             state = IRCLinkState.Ready;
 
@@ -124,7 +125,7 @@ namespace HacknetIRCLink
             if(state != IRCLinkState.Connected)
                 return false;
 
-            client.SendMessage(message, connectedChannel);
+            client.SendMessage(message, ConnectedChannel);
             return true;
         }
     }
