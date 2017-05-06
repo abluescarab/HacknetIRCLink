@@ -17,21 +17,20 @@ namespace HacknetIRCLink
         public static bool IRCCommand(Hacknet.OS os, List<string> args)
         {
             os.write(Environment.NewLine);
-
-            string[] arg = args.ToArray();
+            
             string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
             
             IRCLink link = IRCLink.getInstance(NickName, os);
 
-            if (arg.Length < 2)
+            if (args.Count < 2)
             {
                 os.write(ircCommandUsage);
                 Console.WriteLine("Usage sent");
                 return false;
             }
-            if (arg[1] == "link")
+            if (args[1] == "link")
             {
-                if (arg.Length < 4)
+                if (args.Count < 4)
                 {
                     if(!string.IsNullOrEmpty(link.DefaultServer))
                     {
@@ -44,16 +43,16 @@ namespace HacknetIRCLink
                 }
                 else
                 {
-                    if (arg[3][0] != '#')
+                    if (args[3][0] != '#')
                     {
                         os.write("Channel name invalid. Did you forget the #?");
                         return false;
                     }
-                    link.LinkServer(arg[2], args[3]);
+                    link.LinkServer(args[2], args[3]);
                     os.write("Server and channel set.");
                 }
             }
-            else if (arg[1] == "connect")
+            else if (args[1] == "connect")
             {
                 if(args.Count > 3)
                 {
@@ -68,7 +67,7 @@ namespace HacknetIRCLink
                     }
                 }
             }
-            else if (arg[1] == "disconnect")
+            else if (args[1] == "disconnect")
             {
                 if(!link.Disconnect())
                 {
@@ -78,40 +77,40 @@ namespace HacknetIRCLink
                 
                 os.write("IRC client closed.");
             }
-            else if(arg[1] == "switch")
+            else if(args[1] == "switch")
             {
-                if(arg.Length < 3)
+                if(args.Count < 3)
                 {
                     os.write("Usage: irc switch [CHANNEL]");
                     return false;
                 }
 
-                if (arg[2][0] != '#')
+                if (args[2][0] != '#')
                 {
                     os.write("Channel name invalid. Did you forget the #?");
                     return false;
                 }
 
-                if(!link.SwitchChannel(arg[2]))
+                if(!link.SwitchChannel(args[2]))
                 {
                     os.write("You are not connected to a server.");
                     return false;
                 }
 
-                os.write("Switched to channel " + arg[2]);
+                os.write("Switched to channel " + args[2]);
             }
-            else if (arg[1] == "s")
+            else if (args[1] == "s")
             {
-                if (arg.Length < 3)
+                if (args.Count < 3)
                 {
                     os.write("Usage : irc s [MESSAGE]");
                     return false;
                 }
                 else
                 {
-                    string message = arg[2];
-                    for (int i = 3; i < arg.Length; i++)
-                        message += " " + arg[i];
+                    string message = args[2];
+                    for (int i = 3; i < args.Count; i++)
+                        message += " " + args[i];
 
                     if(!link.Send(message))
                     {
@@ -120,10 +119,10 @@ namespace HacknetIRCLink
                     }
                 }
             }
-            else if (arg[1] == "help")
+            else if (args[1] == "help")
             {
-                os.write(
-                    ircCommandUsage +
+                os.write(ircCommandUsage +
+                    Environment.NewLine +
                     Environment.NewLine + "    link [SERVER] [CHANNEL]" +
                     Environment.NewLine + "        link to a server" +
                     Environment.NewLine + "    connect (SERVER) (CHANNEL)" +
@@ -137,7 +136,6 @@ namespace HacknetIRCLink
                     Environment.NewLine + "    help" +
                     Environment.NewLine + "        show this message");
             }
-
             else
             {
                 os.write(ircCommandUsage);
