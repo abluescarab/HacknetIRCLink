@@ -24,7 +24,7 @@ namespace HacknetIRCLink
 
         public void LoadContent()
         {
-            Pathfinder.Command.Handler.AddCommand("irc", Commands.IRCCmd.IRCCommand, autoComplete: true);
+            Pathfinder.Command.Handler.AddCommand("irc", Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true);
         }
 
         public void Unload()

@@ -16,8 +16,9 @@ namespace HacknetIRCLink
     {
         public static class IRCCmd
         {
+            public static string Description = "Hacknet IRC client";
             static string usage = "Usage: irc [link/connect/disconnect/switch/s/help]";
-
+            
             public static bool IRCCommand(Hacknet.OS os, List<string> args)
             {
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
