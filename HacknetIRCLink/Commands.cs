@@ -18,8 +18,15 @@ namespace HacknetIRCLink
         {
             public const string Key = "irc";
             public const string Description = "Hacknet IRC client";
-            const string usage = "Usage: irc [link/connect/disconnect/raw/switch/help]";
-            
+            const string usage =
+                "Usage:" +
+                "\n    irc link [SERVER] [#CHANNEL]" +
+                "\n    irc connect (SERVER) (#CHANNEL)" +
+                "\n    irc disconnect" +
+                "\n    irc raw [MESSAGE]" +
+                "\n    irc switch [#CHANNEL]" +
+                "\n    irc help";
+
             public static bool IRCCommand(Hacknet.OS os, List<string> args)
             {
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
@@ -123,18 +130,18 @@ namespace HacknetIRCLink
                 }
                 else if (args[1] == "help")
                 {
-                    os.write(usage +
+                    os.write("Usage:" +
                         Environment.NewLine +
-                        Environment.NewLine + "    link [SERVER] [CHANNEL]" +
+                        Environment.NewLine + "    link [SERVER] [#CHANNEL]" +
                         Environment.NewLine + "        link to a server" +
-                        Environment.NewLine + "    connect (SERVER) (CHANNEL)" +
+                        Environment.NewLine + "    connect (SERVER) (#CHANNEL)" +
                         Environment.NewLine + "        connect to the linked server or a provided server" +
                         Environment.NewLine + "    disconnect" +
                         Environment.NewLine + "        disconnect from the server" +
-                        Environment.NewLine + "    switch [CHANNEL]" +
+                        Environment.NewLine + "    switch [#CHANNEL]" +
                         Environment.NewLine + "        switches channels" +
-                        Environment.NewLine + "    raw" +
-                        Environment.NewLine + "        send a raw message to the connected channel (usually commands)" +
+                        Environment.NewLine + "    raw [MESSAGE]" +
+                        Environment.NewLine + "        send a raw message to the connected channel" +
                         Environment.NewLine + "    help" +
                         Environment.NewLine + "        show this message");
                 }
