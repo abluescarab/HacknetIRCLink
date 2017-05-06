@@ -12,5 +12,6 @@ The arguments are as follows:
 * disconnect: pretty self explenatory (*irc disconnect*)
 * switch: changes your channel (*irc switch [CHANNEL]*)
 * raw: sends a raw message to the channel you're connected to (*irc raw [RAW MESSAGE]*). See [here](https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands) for a list of commands.
+
 To send messages use the "say" command.
 
