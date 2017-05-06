@@ -47,7 +47,8 @@ namespace HacknetIRCLink
                 instance.os = os;
             }
 
-            instance.state = IRCLinkState.Ready;
+            if(instance.state == IRCLinkState.Uninitialized)
+                instance.state = IRCLinkState.Ready;
 
             return instance;
         }
