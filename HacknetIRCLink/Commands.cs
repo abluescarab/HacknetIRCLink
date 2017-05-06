@@ -17,12 +17,12 @@ namespace HacknetIRCLink
         static string ircCommandUsage = "Usage: irc [link/connect/disconnect/switch/s/help]";
 
         public static bool IRCCommand(Hacknet.OS os, List<string> args)
-        {
-            os.write(Environment.NewLine);
-            
+        {   
             string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
-            
             IRCLink link = IRCLink.getInstance(NickName, os);
+            bool printNewLine = true;
+
+            os.write(Environment.NewLine);
 
             if (args.Count < 2)
             {
@@ -37,9 +37,9 @@ namespace HacknetIRCLink
                     if(!string.IsNullOrEmpty(link.DefaultServer))
                     {
                         os.write("Linked to " + link.DefaultServer + " " + link.DefaultChannel);
+                        os.write(Environment.NewLine);
                     }
 
-                    os.write(Environment.NewLine);
                     os.write("Usage : irc link [SERVER] [CHANNEL]");
                     return false;
                 }
@@ -119,6 +119,9 @@ namespace HacknetIRCLink
                         os.write("Please connect to a server using \"irc connect\" before sending a message.");
                         return false;
                     }
+
+                    os.write(NickName + ": " + message);
+                    printNewLine = false;
                 }
             }
             else if (args[1] == "help")
@@ -144,7 +147,8 @@ namespace HacknetIRCLink
                 return false;
             }
 
-            os.write(Environment.NewLine);
+            if(printNewLine)
+                os.write(Environment.NewLine);
 
             return true;
         }
