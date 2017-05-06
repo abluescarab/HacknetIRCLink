@@ -11,6 +11,6 @@ The arguments are as follows:
 * switch: changes your channel (*irc switch [CHANNEL]*)
 * send: sends a message to the current channel (*irc send [MESSAGE]*)
 
-You can also use the "send" command to send messages.
+You can also use the "say" command to send messages.
 
 In order to use the mod you HAVE to put chatsharp.dll in the same folder as Hacknet.exe.
