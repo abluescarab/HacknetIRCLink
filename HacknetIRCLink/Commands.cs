@@ -7,6 +7,8 @@ using System.Threading;
 using Hacknet;
 using ChatSharp;
 using System.Text.RegularExpressions;
+using Pathfinder.Util;
+using System.Diagnostics;
 
 namespace HacknetIRCLink
 {
@@ -16,15 +18,9 @@ namespace HacknetIRCLink
         {
             string[] arg = args.ToArray();
             string NickName = os.SaveUserAccountName;
-            NickName = NickName.Replace('(', '_');
-            NickName = NickName.Replace(')', '_');
-            NickName = NickName.Replace('+', '_');
-            NickName = NickName.Replace('*', '_');
-            NickName = NickName.Replace('\"', '_');
-            NickName = NickName.Replace('\'', '_');
-            NickName = NickName.Replace('\\', '_');
-            NickName = NickName.Replace('/', '_');
-
+            
+            NickName = Regex.Replace(NickName, "[^\\w\\d-_]", "_");
+            
             IRCLink link = IRCLink.getInstance(NickName, os);
 
             if (arg.Length < 2)
