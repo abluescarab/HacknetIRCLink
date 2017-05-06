@@ -143,6 +143,7 @@ namespace HacknetIRCLink
                 return false;
 
             client.SendMessage(message, ConnectedChannel);
+            os.write(Nick + ": " + message);
             return true;
         }
     }

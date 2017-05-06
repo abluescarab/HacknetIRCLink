@@ -119,8 +119,7 @@ namespace HacknetIRCLink
                         os.write("Please connect to a server using \"irc connect\" before sending a message.");
                         return false;
                     }
-
-                    os.write(NickName + ": " + message);
+                    
                     printNewLine = false;
                 }
             }
