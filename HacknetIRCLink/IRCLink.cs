@@ -58,17 +58,17 @@ namespace HacknetIRCLink
             defaultChannel = channel;
         }
 
-        public void Connect()
+        public bool Connect()
         {
-            Connect(defaultServer, defaultChannel);
+            return Connect(defaultServer, defaultChannel);
         }
 
-        public void Connect(string ip, string channel)
+        public bool Connect(string ip, string channel)
         {
             Console.WriteLine(Nick);
 
             if(state != IRCLinkState.Ready)
-                return;
+                return false;
 
             client = new IrcClient(ip, new IrcUser(Nick, "HacknetLink"));
 
@@ -101,24 +101,30 @@ namespace HacknetIRCLink
             connectedServer = ip;
             connectedChannel = channel;
             client.ConnectAsync();
+
+            return true;
         }
 
-        public void Disconnect()
+        public bool Disconnect()
         {
             if(state != IRCLinkState.Connected)
-                return;
+                return false;
 
             connectedServer = "";
             connectedChannel = "";
             client.Quit();
             state = IRCLinkState.Ready;
+
+            return true;
         }
 
-        public void Send(string message)
+        public bool Send(string message)
         {
             if(state != IRCLinkState.Connected)
-                return;
+                return false;
+
             client.SendMessage(message, connectedChannel);
+            return true;
         }
     }
 }
