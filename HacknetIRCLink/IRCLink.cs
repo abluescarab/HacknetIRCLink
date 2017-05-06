@@ -16,8 +16,10 @@ namespace HacknetIRCLink
 
         public IRCLinkState state = IRCLinkState.Uninitialized;
 
-        string server = "";
-        string channelname = "";
+        string defaultServer = "";
+        string defaultChannel = "";
+        string connectedServer = "";
+        string connectedChannel = "";
         string Nick = "";
 
         IrcClient client;
@@ -37,33 +39,40 @@ namespace HacknetIRCLink
 
         public static IRCLink getInstance(string nickname, Hacknet.OS os)
         {
-            if (instance == null)
-                    instance = new IRCLink(nickname, os);
+            if(instance == null)
+                instance = new IRCLink(nickname, os);
             else
             {
-                    instance.Nick = nickname;
-                        instance.os = os;
+                instance.Nick = nickname;
+                instance.os = os;
             }
+
+            instance.state = IRCLinkState.Ready;
+
             return instance;
         }
-
-
+        
         public void LinkServer(string server, string channel)
         {
-            this.server = server;
-            this.channelname = channel;
-            state = IRCLinkState.Ready;
+            defaultServer = server;
+            defaultChannel = channel;
         }
-
 
         public void Connect()
         {
-            Console.WriteLine(Nick);
-            if (state != IRCLinkState.Ready)
-                return;
-            client = new IrcClient(server, new IrcUser(Nick, "HacknetLink"));
+            Connect(defaultServer, defaultChannel);
+        }
 
-            client.ConnectionComplete += (s, e) => client.JoinChannel(channelname);
+        public void Connect(string ip, string channel)
+        {
+            Console.WriteLine(Nick);
+
+            if(state != IRCLinkState.Ready)
+                return;
+
+            client = new IrcClient(ip, new IrcUser(Nick, "HacknetLink"));
+
+            client.ConnectionComplete += (s, e) => client.JoinChannel(channel);
 
             client.UserJoinedChannel += (s, e) =>
             {
@@ -77,8 +86,8 @@ namespace HacknetIRCLink
 
             client.NetworkError += (s, e) =>
             {
-                if (state != IRCLinkState.Ready)
-                  os.write("Connection error. Check your internet connection and the server details.");
+                if(state != IRCLinkState.Ready)
+                    os.write("Connection error. Check your internet connection and the server details.");
             };
 
             client.ChannelMessageRecieved += (s, e) =>
@@ -89,26 +98,27 @@ namespace HacknetIRCLink
             };
 
             state = IRCLinkState.Connected;
+            connectedServer = ip;
+            connectedChannel = channel;
             client.ConnectAsync();
-
         }
 
         public void Disconnect()
         {
-            if (state != IRCLinkState.Connected)
+            if(state != IRCLinkState.Connected)
                 return;
 
+            connectedServer = "";
+            connectedChannel = "";
             client.Quit();
             state = IRCLinkState.Ready;
         }
 
         public void Send(string message)
         {
-            if (state != IRCLinkState.Connected)
+            if(state != IRCLinkState.Connected)
                 return;
-            client.SendMessage(message, channelname);
+            client.SendMessage(message, connectedChannel);
         }
-
-
     }
 }

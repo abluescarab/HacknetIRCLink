@@ -49,12 +49,20 @@ namespace HacknetIRCLink
             }
             else if (arg[1] == "connect")
             {
-                if(link.state != IRCLink.IRCLinkState.Ready)
+                if(args.Count > 3)
                 {
-                    os.write("Please use \"irc link\" to set the server and channel first.");
-                    return false;
+                    link.Connect(args[2], args[3]);
                 }
-                link.Connect();
+                else
+                {
+                    if(link.state != IRCLink.IRCLinkState.Ready)
+                    {
+                        os.write("Please use \"irc link\" to set the server and channel first or provide a server and channel to \"irc connect\".");
+                        return false;
+                    }
+
+                    link.Connect();
+                }
             }
             else if (arg[1] == "disconnect")
             {
