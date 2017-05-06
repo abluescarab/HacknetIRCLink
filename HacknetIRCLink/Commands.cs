@@ -107,23 +107,19 @@ namespace HacknetIRCLink
                 }
                 else if (args[1] == "raw")
                 {
-                    if (args.Count < 2)
+                    if (args.Count < 3)
                     {
                         os.write("Usage: irc raw [RAW MESSAGE]");
                         return false;
                     }
 
-                    string message = args[1];
+                    string message = string.Join(" ", args.GetRange(2, args.Count - 2).ToArray());
 
-                    for (int i = 2; i < args.Count; i++)
-                        message += " " + args[i];
-                    if (!link.SendRaw(message))
+                    if (!link.Send(message, true))
                     {
                         os.write("Please connect to a server using \"irc connect\" before issuing a command.");
                         return false;
                     }
-                    return true;
-
                 }
                 else if (args[1] == "help")
                 {
@@ -206,12 +202,10 @@ namespace HacknetIRCLink
                 
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
                 IRCLink link = IRCLink.getInstance(NickName, os);
-                string message = args[1];
 
-                for (int i = 2; i < args.Count; i++)
-                    message += " " + args[i];
+                string message = string.Join(" ", args.GetRange(1, args.Count - 1).ToArray());
 
-                if(!link.Send(message))
+                if(!link.Send(message, false))
                 {
                     os.write("Please connect to a server using \"irc connect\" before sending a message.");
                     return false;
