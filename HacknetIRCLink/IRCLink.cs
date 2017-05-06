@@ -112,7 +112,11 @@ namespace HacknetIRCLink
             if(state != IRCLinkState.Connected)
                 return false;
             
-            client.PartChannel(ConnectedChannel);
+            IrcChannel connected = client.Channels.FirstOrDefault(c => c.Name.ToLower().Equals(ConnectedChannel));
+
+            if(connected != null)
+                client.PartChannel(connected.Name);
+
             client.JoinChannel(channel);
             ConnectedChannel = channel;
             return true;
