@@ -101,6 +101,12 @@ namespace HacknetIRCLink
                 os.write(SenderNick + ": " + message);
             };
 
+            client.RawMessageRecieved += (s, e) =>
+            {
+                string message = e.Message;
+                os.write("Command response: " + message);
+            };
+
             state = IRCLinkState.Connected;
             ConnectServer = ip;
             ConnectedChannel = channel;
@@ -143,6 +149,15 @@ namespace HacknetIRCLink
                 return false;
 
             client.SendMessage(message, ConnectedChannel);
+            os.write(Nick + ": " + message);
+            return true;
+        }
+        public bool SendRaw(string message)
+        {
+            if (state != IRCLinkState.Connected)
+                return false;
+
+            client.SendRawMessage(message, ConnectedChannel);
             os.write(Nick + ": " + message);
             return true;
         }
