@@ -113,7 +113,7 @@ namespace HacknetIRCLink
                         return false;
                     }
 
-                    string message = string.Join(" ", args.GetRange(2, args.Count - 2).ToArray());
+                    string message = string.Join(" ", args.ToArray(), 2, args.Count - 2);
 
                     if (!link.Send(message, true))
                     {
@@ -203,7 +203,7 @@ namespace HacknetIRCLink
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
                 IRCLink link = IRCLink.getInstance(NickName, os);
 
-                string message = string.Join(" ", args.GetRange(1, args.Count - 1).ToArray());
+                string message = string.Join(" ", args.ToArray(), 1, args.Count - 1);
 
                 if(!link.Send(message, false))
                 {
