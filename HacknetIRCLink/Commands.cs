@@ -14,141 +14,192 @@ namespace HacknetIRCLink
 {
     class Commands
     {
-        static string ircCommandUsage = "Usage: irc [link/connect/disconnect/switch/s/help]";
-
-        public static bool IRCCommand(Hacknet.OS os, List<string> args)
+        public static class IRCCmd
         {
-            os.write(Environment.NewLine);
-
-            string[] arg = args.ToArray();
-            string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+            public const string Key = "irc";
+            public const string Description = "Hacknet IRC client";
+            const string usage = "Usage: irc [link/connect/disconnect/switch/help]";
             
-            IRCLink link = IRCLink.getInstance(NickName, os);
+            public static bool IRCCommand(Hacknet.OS os, List<string> args)
+            {
+                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.getInstance(NickName, os);
 
-            if (arg.Length < 2)
-            {
-                os.write(ircCommandUsage);
-                Logger.Verbose("Usage sent");
-                return false;
-            }
-            if (arg[1] == "link")
-            {
-                if (arg.Length < 4)
+                os.write(Environment.NewLine);
+
+                if (args.Count < 2)
                 {
-                    if(!string.IsNullOrEmpty(link.DefaultServer))
-                    {
-                        os.write("Linked to " + link.DefaultServer + " " + link.DefaultChannel);
-                    }
-
-                    os.write(Environment.NewLine);
-                    os.write("Usage : irc link [SERVER] [CHANNEL]");
+                    os.write(usage);
+                    Logger.Verbose("Usage sent");
                     return false;
                 }
-                else
+                if (args[1] == "link")
                 {
-                    if (arg[3][0] != '#')
+                    if (args.Count < 4)
+                    {
+                        if(!string.IsNullOrEmpty(link.DefaultServer))
+                        {
+                            os.write("Linked to " + link.DefaultServer + " " + link.DefaultChannel);
+                            os.write(Environment.NewLine);
+                        }
+
+                        os.write("Usage : irc link [SERVER] [CHANNEL]");
+                        return false;
+                    }
+                    else
+                    {
+                        if (args[3][0] != '#')
+                        {
+                            os.write("Channel name invalid. Did you forget the #?");
+                            return false;
+                        }
+
+                        SaveLink(os, args[2], args[3]);
+                        link.LinkServer(args[2], args[3]);
+                        os.write("Server and channel set.");
+                    }
+                }
+                else if (args[1] == "connect")
+                {
+                    if(args.Count > 3)
+                    {
+                        link.Connect(args[2], args[3]);
+                    }
+                    else
+                    {
+                        if(!link.Connect())
+                        {
+                            os.write("You have not specified a server or channel.");
+                            return false;
+                        }
+                    }
+                }
+                else if (args[1] == "disconnect")
+                {
+                    if(!link.Disconnect())
+                    {
+                        os.write("You are already disconnected.");
+                        return false;
+                    }
+                
+                    os.write("IRC client closed.");
+                }
+                else if(args[1] == "switch")
+                {
+                    if(args.Count < 3)
+                    {
+                        os.write("Usage: irc switch [CHANNEL]");
+                        return false;
+                    }
+
+                    if (args[2][0] != '#')
                     {
                         os.write("Channel name invalid. Did you forget the #?");
                         return false;
                     }
-                    link.LinkServer(arg[2], args[3]);
-                    os.write("Server and channel set.");
+
+                    if(!link.SwitchChannel(args[2]))
+                    {
+                        os.write("You are not connected to a server.");
+                        return false;
+                    }
+
+                    os.write("Switched to channel " + args[2]);
                 }
-            }
-            else if (arg[1] == "connect")
-            {
-                if(args.Count > 3)
+                else if (args[1] == "help")
                 {
-                    link.Connect(args[2], args[3]);
+                    os.write(usage +
+                        Environment.NewLine +
+                        Environment.NewLine + "    link [SERVER] [CHANNEL]" +
+                        Environment.NewLine + "        link to a server" +
+                        Environment.NewLine + "    connect (SERVER) (CHANNEL)" +
+                        Environment.NewLine + "        connect to the linked server or a provided server" +
+                        Environment.NewLine + "    disconnect" +
+                        Environment.NewLine + "        disconnect from the server" +
+                        Environment.NewLine + "    switch [CHANNEL]" +
+                        Environment.NewLine + "        switches channels" +
+                        Environment.NewLine + "    s" +
+                        Environment.NewLine + "        send a message to the connected channel" +
+                        Environment.NewLine + "    help" +
+                        Environment.NewLine + "        show this message");
                 }
                 else
                 {
-                    if(!link.Connect())
-                    {
-                        os.write("You have not specified a server or channel.");
-                        return false;
-                    }
-                }
-            }
-            else if (arg[1] == "disconnect")
-            {
-                if(!link.Disconnect())
-                {
-                    os.write("You are already disconnected.");
+                    os.write(usage);
                     return false;
                 }
                 
-                os.write("IRC client closed.");
+                os.write(Environment.NewLine);
+
+                return true;
             }
-            else if(arg[1] == "switch")
+
+            private static void SaveLink(OS os, string server, string channel)
             {
-                if(arg.Length < 3)
-                {
-                    os.write("Usage: irc switch [CHANNEL]");
-                    return false;
-                }
-
-                if (arg[2][0] != '#')
-                {
-                    os.write("Channel name invalid. Did you forget the #?");
-                    return false;
-                }
-
-                if(!link.SwitchChannel(arg[2]))
-                {
-                    os.write("You are not connected to a server.");
-                    return false;
-                }
-
-                os.write("Switched to channel " + arg[2]);
+                FileEntry file = GetFile(os);
+                file.data = server + Environment.NewLine + channel;
             }
-            else if (arg[1] == "s")
+            
+            public static void LoadLink(OS os)
             {
-                if (arg.Length < 3)
+                FileEntry file = GetFile(os);
+
+                if(!string.IsNullOrWhiteSpace(file.data))
                 {
-                    os.write("Usage : irc s [MESSAGE]");
-                    return false;
+                    string[] data = file.data.Split('\n');
+                    IRCLink.getInstance("", os).LinkServer(data[0], data[1]);
+                }
+            }
+
+            private static FileEntry GetFile(OS os)
+            {
+                string filename = "irc-link.sys";
+                Folder folder = os.thisComputer.getFolderFromPath("sys");
+                FileEntry file;
+
+                if(!folder.containsFile(filename))
+                {
+                    file = new FileEntry("", filename);
+                    folder.files.Add(file);
                 }
                 else
                 {
-                    string message = arg[2];
-                    for (int i = 3; i < arg.Length; i++)
-                        message += " " + arg[i];
-
-                    if(!link.Send(message))
-                    {
-                        os.write("Please connect to a server using \"irc connect\" before sending a message.");
-                        return false;
-                    }
+                    file = folder.searchForFile(filename);
                 }
+
+                return file;
             }
-            else if (arg[1] == "help")
+        }
+
+        public static class SayCmd
+        {
+            public const string Key = "say";
+            public const string Description = "Send a message to the IRC channel";
+            const string usage = "Usage: say [MESSAGE]";
+
+            public static bool SayCommand(OS os, List<string> args)
             {
-                os.write(
-                    ircCommandUsage +
-                    Environment.NewLine + "    link [SERVER] [CHANNEL]" +
-                    Environment.NewLine + "        link to a server" +
-                    Environment.NewLine + "    connect (SERVER) (CHANNEL)" +
-                    Environment.NewLine + "        connect to the linked server or a provided server" +
-                    Environment.NewLine + "    disconnect" +
-                    Environment.NewLine + "        disconnect from the server" +
-                    Environment.NewLine + "    switch [CHANNEL]" +
-                    Environment.NewLine + "        switches channels" +
-                    Environment.NewLine + "    s" +
-                    Environment.NewLine + "        send a message to the connected channel" +
-                    Environment.NewLine + "    help" +
-                    Environment.NewLine + "        show this message");
+                if(args.Count < 2)
+                {
+                    os.write(usage);
+                    return false;
+                }
+                
+                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.getInstance(NickName, os);
+                string message = args[1];
+
+                for (int i = 2; i < args.Count; i++)
+                    message += " " + args[i];
+
+                if(!link.Send(message))
+                {
+                    os.write("Please connect to a server using \"irc connect\" before sending a message.");
+                    return false;
+                }
+
+                return true;
             }
-
-            else
-            {
-                os.write(ircCommandUsage);
-                return false;
-            }
-
-            os.write(Environment.NewLine);
-
-            return true;
         }
     }
 }

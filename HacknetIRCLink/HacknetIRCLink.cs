@@ -19,17 +19,24 @@ namespace HacknetIRCLink
         public void Load()
         {
             Logger.Verbose("Hacknet-IRC Link loaded.");
+            EventManager.RegisterListener<OSPostLoadContenEvent>(LoadIRC);
         }
 
         public void LoadContent()
         {
-            Pathfinder.Command.Handler.AddCommand("irc", Commands.IRCCommand, autoComplete: true);
+            Command.Handler.AddCommand(Commands.IRCCmd.Key, Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true);
+            Command.Handler.AddCommand(Commands.SayCmd.Key, Commands.SayCmd.SayCommand, Commands.SayCmd.Description, true);
         }
 
         public void Unload()
         {
             Logger.Verbose("Unloading Hacknet_IRC Link");
+            EventManager.UnregisterListener<OSPostLoadContenEvent>(LoadIRC);
         }
         
+        public void LoadIRC(OSPostLoadContenEvent e)
+        {
+            Commands.IRCCmd.LoadLink(e.OS);
+        }
     }
 }
