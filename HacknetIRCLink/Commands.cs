@@ -15,9 +15,7 @@ namespace HacknetIRCLink
         public static bool IRCCommand(Hacknet.OS os, List<string> args)
         {
             string[] arg = args.ToArray();
-            string NickName = os.SaveUserAccountName;
-            
-            NickName = Regex.Replace(NickName, "[^\\w\\d-_]", "_");
+            string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
             
             IRCLink link = IRCLink.getInstance(NickName, os);
 
