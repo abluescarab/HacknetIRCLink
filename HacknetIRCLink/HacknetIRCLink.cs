@@ -15,17 +15,10 @@ namespace HacknetIRCLink
     public class HacknetIRCLink : Pathfinder.IPathfinderMod
     {
         public string Identifier => "Hacknet IRC Link";
-        public static string SaveNick = "";
-        private static void SaveName(OSPostLoadContenEvent e)
-        {
-            Console.WriteLine(e.OS.SaveUserAccountName);
-            SaveNick = e.OS.SaveUserAccountName;
-        }
 
         public void Load()
         {
             Console.WriteLine("Hacknet-IRC Link loaded.");
-            EventManager.RegisterListener<OSPostLoadContenEvent>(SaveName);
         }
 
         public void LoadContent()

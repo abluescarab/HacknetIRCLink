@@ -38,7 +38,12 @@ namespace HacknetIRCLink
         public static IRCLink getInstance(string nickname, Hacknet.OS os)
         {
             if (instance == null)
-                instance = new IRCLink(nickname, os);
+                    instance = new IRCLink(nickname, os);
+            else
+            {
+                    instance.Nick = nickname;
+                        instance.os = os;
+            }
             return instance;
         }
 
@@ -53,6 +58,7 @@ namespace HacknetIRCLink
 
         public void Connect()
         {
+            Console.WriteLine(Nick);
             if (state != IRCLinkState.Ready)
                 return;
             client = new IrcClient(server, new IrcUser(Nick, "HacknetLink"));
