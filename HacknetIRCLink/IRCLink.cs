@@ -87,7 +87,7 @@ namespace HacknetIRCLink
             {
                 os.write("User " + e.User.Nick + " has left the channel.");
             };
-
+            
             client.NetworkError += (s, e) =>
             {
                 if(state != IRCLinkState.Ready)
@@ -99,12 +99,6 @@ namespace HacknetIRCLink
                 string SenderNick = Regex.Split(e.PrivateMessage.User.Nick, "!")[0];
                 string message = e.PrivateMessage.Message;
                 os.write(SenderNick + ": " + message);
-            };
-
-            client.RawMessageRecieved += (s, e) =>
-            {
-                string message = e.Message;
-                os.write("Command response: " + message);
             };
 
             state = IRCLinkState.Connected;
@@ -143,23 +137,29 @@ namespace HacknetIRCLink
             return true;
         }
 
-        public bool Send(string message)
+        public bool Send(string message, bool raw)
         {
             if(state != IRCLinkState.Connected)
                 return false;
+            
+            if(raw)
+            {
+                client.RawMessageRecieved += client_RawMessageReceived;
+                client.SendRawMessage(message, ConnectedChannel);
+            }
+            else
+            {
+                client.SendMessage(message, ConnectedChannel);
+                os.write(Nick + ": " + message);
+            }
 
-            client.SendMessage(message, ConnectedChannel);
-            os.write(Nick + ": " + message);
             return true;
         }
-        public bool SendRaw(string message)
-        {
-            if (state != IRCLinkState.Connected)
-                return false;
 
-            client.SendRawMessage(message, ConnectedChannel);
-            os.write(Nick + ": " + message);
-            return true;
+        private void client_RawMessageReceived(object sender, ChatSharp.Events.RawMessageEventArgs e)
+        {
+            os.write(e.Message);
+            client.RawMessageRecieved -= client_RawMessageReceived;
         }
     }
 }
