@@ -150,7 +150,7 @@ namespace HacknetIRCLink
             else
             {
                 client.SendMessage(message, ConnectedChannel);
-                os.write(Nick + ": " + message);
+                //os.write(Nick + ": " + message);
             }
 
             return true;
