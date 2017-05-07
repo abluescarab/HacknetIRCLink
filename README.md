@@ -6,7 +6,7 @@ Messages are displayed in the command line.
 In order to use the mod you must **put ChatSharp.dll in the same folder as Hacknet.exe**.
 
 ## Usage
-* **irc link [SERVER] [#CHANNEL]**: link to a server
+* **irc link [SERVER] [#CHANNEL]**: link to a server (Ex: eu.iso.rizon.net #hacknetlink)
 * **irc connect (SERVER) (#CHANNEL)**: without arguments, connect to the linked server; with arguments, connect to the specified server
 * **irc disconnect**: disconnect from a server
 * **irc switch [#CHANNEL]**: switch channels
