@@ -26,9 +26,7 @@ namespace HacknetIRCLink
             {
                 string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
                 IRCLink link = IRCLink.getInstance(NickName, os);
-
-                os.write(Environment.NewLine);
-
+                
                 if (args.Count < 2)
                 {
                     os.write(usage);
@@ -133,8 +131,6 @@ namespace HacknetIRCLink
                     return false;
                 }
                 
-                os.write(Environment.NewLine);
-
                 return true;
             }
 
