@@ -14,11 +14,11 @@ namespace HacknetIRCLink
             const string usage =
                 "---------------------------------" +
                 "\nUsage:" +
-                "\n    " + Key + " link [SERVER] [#CHANNEL]" +
-                "\n    " + Key + " connect (SERVER) (#CHANNEL)" +
+                "\n    " + Key + " link [server] [#channel]" +
+                "\n    " + Key + " connect <server> <#channel>" +
                 "\n    " + Key + " disconnect" +
-                "\n    " + Key + " raw [MESSAGE]" +
-                "\n    " + Key + " switch [#CHANNEL]" +
+                "\n    " + Key + " raw [message]" +
+                "\n    " + Key + " switch [#channel]" +
                 "\n    " + Key + " help" +
                 "\n---------------------------------";
 
@@ -43,7 +43,7 @@ namespace HacknetIRCLink
                             os.write(Environment.NewLine);
                         }
 
-                        os.write("Usage : irc link [SERVER] [#CHANNEL]");
+                        os.write("Usage : irc link [server] [#channel]");
                         return false;
                     }
                     else
@@ -88,7 +88,7 @@ namespace HacknetIRCLink
                 {
                     if(args.Count < 3)
                     {
-                        os.write("Usage: irc switch [#CHANNEL]");
+                        os.write("Usage: irc switch [#channel]");
                         return false;
                     }
 
@@ -110,7 +110,7 @@ namespace HacknetIRCLink
                 {
                     if (args.Count < 3)
                     {
-                        os.write("Usage: irc raw [RAW MESSAGE]");
+                        os.write("Usage: irc raw [message]");
                         return false;
                     }
 
@@ -176,7 +176,7 @@ namespace HacknetIRCLink
         {
             public const string Key = "say";
             public const string Description = "Send a message to the IRC channel";
-            const string usage = "Usage: " + Key + " [MESSAGE]";
+            const string usage = "Usage: " + Key + " [message]";
 
             public static bool SayCommand(OS os, List<string> args)
             {
