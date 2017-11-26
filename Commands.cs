@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using Hacknet;
-using ChatSharp;
-using Pathfinder;
-using Pathfinder.Util;
 using System.Text.RegularExpressions;
+using Hacknet;
 
 namespace HacknetIRCLink
 {
