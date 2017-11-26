@@ -12,13 +12,15 @@ namespace HacknetIRCLink
             public const string Key = "irc";
             public const string Description = "Hacknet IRC client";
             const string usage =
-                "Usage:" +
+                "---------------------------------" +
+                "\nUsage:" +
                 "\n    " + Key + " link [SERVER] [#CHANNEL]" +
                 "\n    " + Key + " connect (SERVER) (#CHANNEL)" +
                 "\n    " + Key + " disconnect" +
                 "\n    " + Key + " raw [MESSAGE]" +
                 "\n    " + Key + " switch [#CHANNEL]" +
-                "\n    " + Key + " help";
+                "\n    " + Key + " help" +
+                "\n---------------------------------";
 
             public static bool IRCCommand(Hacknet.OS os, List<string> args)
             {
@@ -123,20 +125,7 @@ namespace HacknetIRCLink
                 }
                 else if (args[1] == "help")
                 {
-                    os.write("Usage:" +
-                        Environment.NewLine +
-                        Environment.NewLine + "    link [SERVER] [#CHANNEL]" +
-                        Environment.NewLine + "        link to a server" +
-                        Environment.NewLine + "    connect (SERVER) (#CHANNEL)" +
-                        Environment.NewLine + "        connect to the linked server or a provided server" +
-                        Environment.NewLine + "    disconnect" +
-                        Environment.NewLine + "        disconnect from the server" +
-                        Environment.NewLine + "    switch [#CHANNEL]" +
-                        Environment.NewLine + "        switches channels" +
-                        Environment.NewLine + "    raw [MESSAGE]" +
-                        Environment.NewLine + "        send a raw message to the connected channel" +
-                        Environment.NewLine + "    help" +
-                        Environment.NewLine + "        show this message");
+                    os.write(usage);
                 }
                 else
                 {
