@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hacknet;
-using Pathfinder;
+﻿using Pathfinder.Event;
+using Pathfinder.ModManager;
 using Pathfinder.Util;
-using Pathfinder.Event;
 using Command = Pathfinder.Command;
-using Executable = Pathfinder.Executable;
 
 namespace HacknetIRCLink
 {
-    public class HacknetIRCLink : Pathfinder.IPathfinderMod
+    public class HacknetIRCLink : IMod
     {
         public string Identifier => "Hacknet IRC Link";
 
         public void Load()
         {
             Logger.Verbose("Hacknet-IRC Link loaded.");
-            EventManager.RegisterListener<OSPostLoadContenEvent>(LoadIRC);
+            EventManager.RegisterListener<OSPostLoadContentEvent>(LoadIRC);
         }
 
         public void LoadContent()
@@ -31,10 +24,10 @@ namespace HacknetIRCLink
         public void Unload()
         {
             Logger.Verbose("Unloading Hacknet_IRC Link");
-            EventManager.UnregisterListener<OSPostLoadContenEvent>(LoadIRC);
+            EventManager.UnregisterListener<OSPostLoadContentEvent>(LoadIRC);
         }
-        
-        public void LoadIRC(OSPostLoadContenEvent e)
+
+        public void LoadIRC(OSPostLoadContentEvent e)
         {
             Commands.IRCCmd.LoadLink(e.OS);
         }
