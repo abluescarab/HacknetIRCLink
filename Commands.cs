@@ -32,6 +32,7 @@ namespace HacknetIRCLink
                     os.write(usage);
                     return false;
                 }
+
                 if (args[1] == "link")
                 {
                     if (args.Count < 4)
@@ -42,7 +43,7 @@ namespace HacknetIRCLink
                             os.write(Environment.NewLine);
                         }
 
-                        os.write("Usage : irc link [SERVER] [CHANNEL]");
+                        os.write("Usage : irc link [SERVER] [#CHANNEL]");
                         return false;
                     }
                     else
@@ -87,7 +88,7 @@ namespace HacknetIRCLink
                 {
                     if(args.Count < 3)
                     {
-                        os.write("Usage: irc switch [CHANNEL]");
+                        os.write("Usage: irc switch [#CHANNEL]");
                         return false;
                     }
 
