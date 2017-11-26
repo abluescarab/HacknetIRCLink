@@ -1,15 +1,26 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using ChatSharp;
+using ChatSharp.Events;
+using Hacknet;
 using Pathfinder.Util;
 
 namespace HacknetIRCLink
 {
     class IRCLink
     {
-        static IRCLink instance;
+        public enum IRCLinkState
+        {
+            Uninitialized,
+            Ready,
+            Connected
+        }
 
-        Hacknet.OS os;
+        private static IRCLink instance;
+
+        private OS os;
+        private IrcClient client;
+        private string nickname = "";
 
         public IRCLinkState state = IRCLinkState.Uninitialized;
 
@@ -18,35 +29,28 @@ namespace HacknetIRCLink
         public string ConnectServer { get; private set; }
         public string ConnectedChannel { get; private set; }
 
-        string Nick = "";
-
-        IrcClient client;
-
-        public enum IRCLinkState
+        IRCLink(string nickname, OS os)
         {
-            Uninitialized,
-            Ready,
-            Connected
-        }
-
-        IRCLink(string nickname, Hacknet.OS os)
-        {
-            Nick = nickname;
+            this.nickname = nickname;
             this.os = os;
         }
 
-        public static IRCLink getInstance(string nickname, Hacknet.OS os)
+        public static IRCLink GetInstance(string nickname, OS os)
         {
-            if(instance == null)
+            if (instance == null)
+            {
                 instance = new IRCLink(nickname, os);
+            }
             else
             {
-                instance.Nick = nickname;
+                instance.nickname = nickname;
                 instance.os = os;
             }
 
-            if(instance.state == IRCLinkState.Uninitialized)
+            if (instance.state == IRCLinkState.Uninitialized)
+            {
                 instance.state = IRCLinkState.Ready;
+            }
 
             return instance;
         }
@@ -64,12 +68,14 @@ namespace HacknetIRCLink
 
         public bool Connect(string ip, string channel)
         {
-            Logger.Verbose(Nick);
+            Logger.Verbose(nickname);
 
-            if(state != IRCLinkState.Ready)
+            if (state != IRCLinkState.Ready)
+            {
                 return false;
+            }
 
-            client = new IrcClient(ip, new IrcUser(Nick, "HacknetLink"));
+            client = new IrcClient(ip, new IrcUser(nickname, "HacknetLink"));
 
             client.ConnectionComplete += (s, e) => client.JoinChannel(channel);
 
@@ -85,7 +91,7 @@ namespace HacknetIRCLink
             
             client.NetworkError += (s, e) =>
             {
-                if(state != IRCLinkState.Ready)
+                if (state != IRCLinkState.Ready)
                     os.write("Connection error. Check your internet connection and the server details.");
             };
 
@@ -106,13 +112,17 @@ namespace HacknetIRCLink
 
         public bool SwitchChannel(string channel)
         {
-            if(state != IRCLinkState.Connected)
+            if (state != IRCLinkState.Connected)
+            {
                 return false;
+            }
             
             IrcChannel connected = client.Channels.FirstOrDefault(c => c.Name.ToLower().Equals(ConnectedChannel));
 
-            if(connected != null)
+            if (connected != null)
+            {
                 client.PartChannel(connected.Name);
+            }
 
             client.JoinChannel(channel);
             ConnectedChannel = channel;
@@ -121,8 +131,10 @@ namespace HacknetIRCLink
 
         public bool Disconnect()
         {
-            if(state != IRCLinkState.Connected)
+            if (state != IRCLinkState.Connected)
+            {
                 return false;
+            }
 
             ConnectServer = "";
             ConnectedChannel = "";
@@ -134,12 +146,14 @@ namespace HacknetIRCLink
 
         public bool Send(string message, bool raw)
         {
-            if(state != IRCLinkState.Connected)
-                return false;
-            
-            if(raw)
+            if (state != IRCLinkState.Connected)
             {
-                client.RawMessageRecieved += client_RawMessageReceived;
+                return false;
+            }
+            
+            if (raw)
+            {
+                client.RawMessageRecieved += Client_RawMessageReceived;
                 client.SendRawMessage(message, ConnectedChannel);
             }
             else
@@ -151,10 +165,10 @@ namespace HacknetIRCLink
             return true;
         }
 
-        private void client_RawMessageReceived(object sender, ChatSharp.Events.RawMessageEventArgs e)
+        private void Client_RawMessageReceived(object sender, RawMessageEventArgs e)
         {
             os.write(e.Message);
-            client.RawMessageRecieved -= client_RawMessageReceived;
+            client.RawMessageRecieved -= Client_RawMessageReceived;
         }
     }
 }

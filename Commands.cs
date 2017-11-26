@@ -22,10 +22,10 @@ namespace HacknetIRCLink
                 "\n    " + Key + " help" +
                 "\n---------------------------------";
 
-            public static bool IRCCommand(Hacknet.OS os, List<string> args)
+            public static bool IRCCommand(OS os, List<string> args)
             {
-                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
-                IRCLink link = IRCLink.getInstance(NickName, os);
+                string nickname = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.GetInstance(nickname, os);
                 
                 if (args.Count < 2)
                 {
@@ -148,7 +148,7 @@ namespace HacknetIRCLink
                 if(!string.IsNullOrWhiteSpace(file.data))
                 {
                     string[] data = file.data.Split('\n');
-                    IRCLink.getInstance("", os).LinkServer(data[0], data[1]);
+                    IRCLink.GetInstance("", os).LinkServer(data[0], data[1]);
                 }
             }
 
@@ -186,8 +186,8 @@ namespace HacknetIRCLink
                     return false;
                 }
                 
-                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
-                IRCLink link = IRCLink.getInstance(NickName, os);
+                string nickname = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.GetInstance(nickname, os);
 
                 string message = string.Join(" ", args.ToArray(), 1, args.Count - 1);
 

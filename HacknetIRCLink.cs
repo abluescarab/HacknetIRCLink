@@ -1,7 +1,7 @@
-﻿using Pathfinder.Event;
+﻿using Pathfinder.Command;
+using Pathfinder.Event;
 using Pathfinder.ModManager;
 using Pathfinder.Util;
-using Pathfinder.Command;
 
 namespace HacknetIRCLink
 {
