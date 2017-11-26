@@ -17,8 +17,8 @@ namespace HacknetIRCLink
 
         public void LoadContent()
         {
-            Command.Handler.AddCommand(Commands.IRCCmd.Key, Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true);
-            Command.Handler.AddCommand(Commands.SayCmd.Key, Commands.SayCmd.SayCommand, Commands.SayCmd.Description, true);
+            Command.Handler.RegisterCommand(Commands.IRCCmd.Key, Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true);
+            Command.Handler.RegisterCommand(Commands.SayCmd.Key, Commands.SayCmd.SayCommand, Commands.SayCmd.Description, true);
         }
 
         public void Unload()
