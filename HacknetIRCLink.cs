@@ -1,7 +1,7 @@
 ﻿using Pathfinder.Event;
 using Pathfinder.ModManager;
 using Pathfinder.Util;
-using Command = Pathfinder.Command;
+using Pathfinder.Command;
 
 namespace HacknetIRCLink
 {
@@ -17,10 +17,10 @@ namespace HacknetIRCLink
 
         public void LoadContent()
         {
-            Logger.Info("Command {0} registered.", Command.Handler.RegisterCommand(
-                Commands.IRCCmd.Key, Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true));
-            Logger.Info("Command {0} registered.", Command.Handler.RegisterCommand(
-                Commands.SayCmd.Key, Commands.SayCmd.SayCommand, Commands.SayCmd.Description, true));
+            Logger.Info("Command {0} registered.", Handler.RegisterCommand(Commands.IRCCmd.Key,
+                Commands.IRCCmd.IRCCommand, Commands.IRCCmd.Description, true));
+            Logger.Info("Command {0} registered.", Handler.RegisterCommand(Commands.SayCmd.Key,
+                Commands.SayCmd.SayCommand, Commands.SayCmd.Description, true));
         }
 
         public void Unload()
