@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using Hacknet;
-using ChatSharp;
-using Pathfinder;
-using Pathfinder.Util;
 using System.Text.RegularExpressions;
+using Hacknet;
 
 namespace HacknetIRCLink
 {
@@ -19,26 +12,27 @@ namespace HacknetIRCLink
             public const string Key = "irc";
             public const string Description = "Hacknet IRC client";
             const string usage =
-                "Usage:" +
-                "\n    " + Key + " link [SERVER] [#CHANNEL]" +
-                "\n    " + Key + " connect (SERVER) (#CHANNEL)" +
+                "---------------------------------" +
+                "\nUsage:" +
+                "\n    " + Key + " link <server> <#channel>" +
+                "\n    " + Key + " connect [server] [#channel]" +
                 "\n    " + Key + " disconnect" +
-                "\n    " + Key + " raw [MESSAGE]" +
-                "\n    " + Key + " switch [#CHANNEL]" +
-                "\n    " + Key + " help";
+                "\n    " + Key + " raw <message>" +
+                "\n    " + Key + " switch <#channel>" +
+                "\n    " + Key + " help" +
+                "\n---------------------------------";
 
-            public static bool IRCCommand(Hacknet.OS os, List<string> args)
+            public static bool IRCCommand(OS os, List<string> args)
             {
-                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
-                IRCLink link = IRCLink.getInstance(NickName, os);
-
-                os.write(Environment.NewLine);
-
+                string nickname = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.GetInstance(nickname, os);
+                
                 if (args.Count < 2)
                 {
                     os.write(usage);
                     return false;
                 }
+
                 if (args[1] == "link")
                 {
                     if (args.Count < 4)
@@ -49,7 +43,7 @@ namespace HacknetIRCLink
                             os.write(Environment.NewLine);
                         }
 
-                        os.write("Usage : irc link [SERVER] [CHANNEL]");
+                        os.write("Usage : irc link <server> <#channel>");
                         return false;
                     }
                     else
@@ -94,7 +88,7 @@ namespace HacknetIRCLink
                 {
                     if(args.Count < 3)
                     {
-                        os.write("Usage: irc switch [CHANNEL]");
+                        os.write("Usage: irc switch <#channel>");
                         return false;
                     }
 
@@ -116,7 +110,7 @@ namespace HacknetIRCLink
                 {
                     if (args.Count < 3)
                     {
-                        os.write("Usage: irc raw [RAW MESSAGE]");
+                        os.write("Usage: irc raw <message>");
                         return false;
                     }
 
@@ -130,20 +124,7 @@ namespace HacknetIRCLink
                 }
                 else if (args[1] == "help")
                 {
-                    os.write("Usage:" +
-                        Environment.NewLine +
-                        Environment.NewLine + "    link [SERVER] [#CHANNEL]" +
-                        Environment.NewLine + "        link to a server" +
-                        Environment.NewLine + "    connect (SERVER) (#CHANNEL)" +
-                        Environment.NewLine + "        connect to the linked server or a provided server" +
-                        Environment.NewLine + "    disconnect" +
-                        Environment.NewLine + "        disconnect from the server" +
-                        Environment.NewLine + "    switch [#CHANNEL]" +
-                        Environment.NewLine + "        switches channels" +
-                        Environment.NewLine + "    raw [MESSAGE]" +
-                        Environment.NewLine + "        send a raw message to the connected channel" +
-                        Environment.NewLine + "    help" +
-                        Environment.NewLine + "        show this message");
+                    os.write(usage);
                 }
                 else
                 {
@@ -151,8 +132,6 @@ namespace HacknetIRCLink
                     return false;
                 }
                 
-                os.write(Environment.NewLine);
-
                 return true;
             }
 
@@ -169,7 +148,7 @@ namespace HacknetIRCLink
                 if(!string.IsNullOrWhiteSpace(file.data))
                 {
                     string[] data = file.data.Split('\n');
-                    IRCLink.getInstance("", os).LinkServer(data[0], data[1]);
+                    IRCLink.GetInstance("", os).LinkServer(data[0], data[1]);
                 }
             }
 
@@ -197,7 +176,7 @@ namespace HacknetIRCLink
         {
             public const string Key = "say";
             public const string Description = "Send a message to the IRC channel";
-            const string usage = "Usage: " + Key + " [MESSAGE]";
+            const string usage = "Usage: " + Key + " <message>";
 
             public static bool SayCommand(OS os, List<string> args)
             {
@@ -207,8 +186,8 @@ namespace HacknetIRCLink
                     return false;
                 }
                 
-                string NickName = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
-                IRCLink link = IRCLink.getInstance(NickName, os);
+                string nickname = Regex.Replace(os.SaveUserAccountName, "[^\\w\\d-_]", "_");
+                IRCLink link = IRCLink.GetInstance(nickname, os);
 
                 string message = string.Join(" ", args.ToArray(), 1, args.Count - 1);
 

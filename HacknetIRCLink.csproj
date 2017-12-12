@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,16 +33,15 @@
   <ItemGroup>
     <Reference Include="ChatSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ChatSharp.1.0.1\lib\net451\ChatSharp.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Hacknet">
-      <HintPath>E:\SteamApps\steamapps\common\Hacknet\Hacknet.exe</HintPath>
+    <Reference Include="FNA">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hacknet\FNA.dll</HintPath>
     </Reference>
     <Reference Include="HacknetPathfinder">
-      <HintPath>E:\SteamApps\steamapps\common\Hacknet\HacknetPathfinder.exe</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Hacknet\HacknetPathfinder.exe</HintPath>
     </Reference>
     <Reference Include="Pathfinder">
-      <HintPath>E:\SteamApps\steamapps\common\Hacknet\Pathfinder.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Hacknet\Pathfinder.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,8 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Hacknet\Mods\"
+xcopy /Y "$(TargetDir)ChatSharp.dll" "C:\Program Files (x86)\Steam\steamapps\common\Hacknet\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
